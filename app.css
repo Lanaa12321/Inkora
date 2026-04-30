@@ -1,0 +1,66 @@
+body {
+  margin: 0;
+  background: #10251c;
+  color: #f3ead7;
+  font-family: Arial, sans-serif;
+}
+
+.app {
+  max-width: 900px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+h1 {
+  font-size: 52px;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: #d6c7a7;
+  margin-bottom: 30px;
+}
+
+.book-form {
+  background: #1c3a2d;
+  padding: 25px;
+  border-radius: 18px;
+  display: grid;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+input,
+select,
+textarea {
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+}
+
+textarea {
+  min-height: 80px;
+}
+
+button {
+  background: #d8b56d;
+  color: #10251c;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.book-list {
+  display: grid;
+  gap: 18px;
+}
+
+.book-card {
+  background: #f3ead7;
+  color: #10251c;
+  padding: 22px;
+  border-radius: 18px;
+}

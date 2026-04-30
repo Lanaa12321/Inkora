@@ -1,0 +1,344 @@
+{
+  "info": {
+    "name": "Inkora API",
+    "description": "Complete REST API collection for Inkora — your personal book tracker.\n\n**Base URL:** `http://localhost:5000`\n\n**Setup:**\n1. Make sure your server is running (`npm run dev`)\n2. Set the `base_url` variable below\n3. Run requests in order — copy an `_id` from a GET response and paste it into the `book_id` variable",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "book_id",
+      "value": "PASTE_BOOK_ID_HERE",
+      "type": "string",
+      "description": "Replace with a real _id from a GET /books response"
+    }
+  ],
+  "item": [
+    {
+      "name": "🏠 Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": ["{{base_url}}"],
+          "path": [""]
+        },
+        "description": "Check that the Inkora API server is running."
+      }
+    },
+    {
+      "name": "📚 Books",
+      "item": [
+        {
+          "name": "GET all books",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/books",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books"]
+            },
+            "description": "Returns all books in the database, sorted by newest first."
+          }
+        },
+        {
+          "name": "GET books — filter by status (finished)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/books?status=finished",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books"],
+              "query": [
+                { "key": "status", "value": "finished", "description": "Options: want | reading | finished" }
+              ]
+            },
+            "description": "Filter books by reading status. Options: `want`, `reading`, `finished`"
+          }
+        },
+        {
+          "name": "GET books — filter by status (reading)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/books?status=reading",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books"],
+              "query": [
+                { "key": "status", "value": "reading" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET books — filter by status (want)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/books?status=want",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books"],
+              "query": [
+                { "key": "status", "value": "want" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET books — sort by rating",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/books?sort=rating",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books"],
+              "query": [
+                { "key": "sort", "value": "rating", "description": "Options: newest | oldest | title | rating" }
+              ]
+            },
+            "description": "Sort options: `newest` (default), `oldest`, `title`, `rating`"
+          }
+        },
+        {
+          "name": "GET books — filter by genre",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/books?genre=Fiction",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books"],
+              "query": [
+                { "key": "genre", "value": "Fiction", "description": "e.g. Fiction, Sci-Fi, Mystery, Fantasy ..." }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET single book by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/books/{{book_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books", "{{book_id}}"]
+            },
+            "description": "Get a single book. Replace `{{book_id}}` in the collection variable with a real `_id` from a GET all books response."
+          }
+        },
+        {
+          "name": "POST create a book",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"The Midnight Library\",\n  \"author\": \"Matt Haig\",\n  \"genre\": \"Fiction\",\n  \"status\": \"finished\",\n  \"rating\": 5,\n  \"review\": \"A beautiful story about regret, hope, and the infinite possibilities of life. One of the best books I've ever read.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/books",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books"]
+            },
+            "description": "Create a new book entry.\n\n**Required:** `title`, `author`\n\n**Optional:** `genre`, `status` (want/reading/finished), `rating` (0-5), `review`"
+          }
+        },
+        {
+          "name": "POST create a book (minimal)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Dune\",\n  \"author\": \"Frank Herbert\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/books",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books"]
+            },
+            "description": "Creates a book with only the required fields. Defaults: status=want, rating=0."
+          }
+        },
+        {
+          "name": "POST create a book — currently reading",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Atomic Habits\",\n  \"author\": \"James Clear\",\n  \"genre\": \"Self-Help\",\n  \"status\": \"reading\",\n  \"rating\": 4\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/books",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books"]
+            }
+          }
+        },
+        {
+          "name": "PUT update a book",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"finished\",\n  \"rating\": 4,\n  \"review\": \"Incredible world-building. The political intrigue is unmatched. A must-read for any sci-fi fan.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/books/{{book_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books", "{{book_id}}"]
+            },
+            "description": "Update any field(s) on a book. Only the fields you include will be updated — all others remain unchanged."
+          }
+        },
+        {
+          "name": "PUT update rating only",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/books/{{book_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books", "{{book_id}}"]
+            }
+          }
+        },
+        {
+          "name": "PUT update status to reading",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"reading\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/books/{{book_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books", "{{book_id}}"]
+            }
+          }
+        },
+        {
+          "name": "DELETE a book",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/books/{{book_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books", "{{book_id}}"]
+            },
+            "description": "Permanently deletes a book from the database. This cannot be undone."
+          }
+        }
+      ]
+    },
+    {
+      "name": "❌ Error Cases (for testing)",
+      "item": [
+        {
+          "name": "GET — invalid ID format",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/books/not-a-valid-id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books", "not-a-valid-id"]
+            },
+            "description": "Returns 400 — invalid ObjectId format."
+          }
+        },
+        {
+          "name": "POST — missing required fields",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"genre\": \"Fiction\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/books",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books"]
+            },
+            "description": "Returns 400 validation error — title and author are required."
+          }
+        },
+        {
+          "name": "POST — invalid status value",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Test Book\",\n  \"author\": \"Test Author\",\n  \"status\": \"done\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/books",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books"]
+            },
+            "description": "Returns 400 — 'done' is not a valid status."
+          }
+        },
+        {
+          "name": "GET — route not found",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/nonexistent",
+              "host": ["{{base_url}}"],
+              "path": ["api", "nonexistent"]
+            },
+            "description": "Returns 404 — route does not exist."
+          }
+        }
+      ]
+    }
+  ]
+}
