@@ -6,7 +6,7 @@ const cors = require("cors");
 const connectDB = require("./db");
 const bookRoutes = require("./bookcontroller");
 const { notFound, errorHandler } = require("./errorhandler");
-const Book = require("./Book");
+const Book = require("./book");
 
 connectDB();
 
