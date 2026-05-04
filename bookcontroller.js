@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Book = require('./book');
+const Book = require("./book");
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const books = await Book.find().sort({ createdAt: -1 });
     res.json(books);
@@ -11,34 +11,31 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const { title, author, status, rating, review } = req.body;
-
-    if (!title || !author) {
-      return res.status(400).json({ message: 'Title and author are required' });
-    }
-
-    const book = await Book.create({
-      title,
-      author,
-      status,
-      rating,
-      review
+    const book = new Book({
+      title: req.body.title,
+      author: req.body.author,
+      genre: req.body.genre,
+      dateAdded: req.body.dateAdded || new Date(),
+      status: req.body.status,
+      rating: req.body.rating,
+      review: req.body.review
     });
 
-    res.status(201).json(book);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    const savedBook = await book.save();
+    res.status(201).json(savedBook);
+  } catch (err) {
+    res.status(500).json({ message: "Error creating book" });
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const book = await Book.findById(req.params.id);
 
     if (!book) {
-      return res.status(404).json({ message: 'Book not found' });
+      return res.status(404).json({ message: "Book not found" });
     }
 
     res.json(book);
@@ -47,32 +44,48 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
-    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
-    });
+    const book = await Book.findById(req.params.id);
 
     if (!book) {
-      return res.status(404).json({ message: 'Book not found' });
+      return res.status(404).json({ message: "Book not found" });
     }
 
-    res.json(book);
+    if (book.review || book.rating) {
+      book.reviewHistory.push({
+        rating: book.rating,
+        review: book.review,
+        status: book.status,
+        updatedAt: new Date()
+      });
+    }
+
+    book.title = req.body.title;
+    book.author = req.body.author;
+    book.genre = req.body.genre;
+    book.dateAdded = req.body.dateAdded || book.dateAdded;
+    book.status = req.body.status;
+    book.rating = req.body.rating;
+    book.review = req.body.review;
+
+    const updatedBook = await book.save();
+
+    res.json(updatedBook);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const book = await Book.findByIdAndDelete(req.params.id);
 
     if (!book) {
-      return res.status(404).json({ message: 'Book not found' });
+      return res.status(404).json({ message: "Book not found" });
     }
 
-    res.json({ message: 'Book deleted successfully' });
+    res.json({ message: "Book deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
